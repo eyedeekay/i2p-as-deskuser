@@ -83,7 +83,7 @@ $(HOME)/.config/i2pd/tunnels.conf:
 	@echo "keys = irc-keys.dat" | tee -a $(HOME)/.config/i2pd/tunnels.conf
 
 run: config
-	cp -f /usr/sbin/i2pd $(HOME)/.local/i2pd/i2pd
+	i2pd-$(VERSION)/i2pd $(HOME)/.local/i2pd/i2pd
 	cd $(HOME)/.local/i2pd/ && ./i2pd \
 		--conf=$(HOME)/.config/i2pd/i2pd.conf \
 		--tunconf=$(HOME)/.config/i2pd/tunnels.conf \
