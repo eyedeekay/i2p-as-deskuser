@@ -2,17 +2,28 @@
 USE_AVX=no
 USE_AESNI=no
 USE_STATIC=yes
+USE_UPNP=yes
+
 
 HOME=$(shell pwd)
 
 VERSION=$(shell curl -s "https://api.github.com/repos/PurpleI2P/i2pd/releases/latest"|grep "tag_name"|sed -E 's|.*"([^"]+)".*|\1|')
 
-release:
+i2pd.$(VERSION).tar.gz:
+	rm -vf i2pd-*.tar.gz
 	curl -L https://github.com/PurpleI2P/i2pd/archive/$(VERSION).tar.gz -o i2pd.$(VERSION).tar.gz
 	rm -rf i2pd-$(VERSION)
 	tar xvzf i2pd.$(VERSION).tar.gz
+
+get: i2pd.$(VERSION).tar.gz
+
+i2pd-$(VERSION)/i2pd:
 	cd i2pd-$(VERSION)
 	cd i2pd-$(VERSION) && make
+
+release: i2pd-$(VERSION)/i2pd
+
+current: get release
 
 config: $(HOME)/.config/i2pd $(HOME)/.config/i2pd/i2pd.conf $(HOME)/.config/i2pd/tunnels.conf
 
@@ -79,4 +90,4 @@ run: config
 		--datadir=$(HOME)/.local/i2pd \
 		--log=stdout
 
-all: clean config run
+all: clean current config run
